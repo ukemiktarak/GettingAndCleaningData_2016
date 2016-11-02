@@ -47,10 +47,3 @@ FUNCTIONS
 	Function should be called from the command to run the script.
 	Parameters: N/A
 	
-CODE BOOK  (run_analysis.txt)
-==========
-	The variables in the generated data file:
-	1- subject: subject number
-	2- activity: activity label
-	3- variable: variable/column name from the original dataset
-	4- average: average value of  each variable for each activity and each subject
