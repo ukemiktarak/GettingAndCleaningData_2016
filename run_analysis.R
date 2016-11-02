@@ -7,7 +7,7 @@
 
 library(dplyr)
 
-# Merge files
+# mergeFiles
 #  1- Merges the training and the test sets to create one data set.
 mergeFiles <- function(pathDir){
     # read measurement ("X" files) and activity ("Y" files) files
@@ -36,7 +36,6 @@ mergeFiles <- function(pathDir){
 
 # extractMnStdColumns
 #  2- Extracts only the measurements on the mean and standard deviation for each measurement.
-## extractMnStdColumns: returns a data frame that has only the std and mean columns
 extractMnStdColumns <- function(df){
     ## get the column numbers that have mean and std values
     colsToExtract <- grep("subject_code|activity|mean|std", colnames(df))
@@ -46,6 +45,7 @@ extractMnStdColumns <- function(df){
     retDf
 }
 
+# addActivityNames
 #  3- Uses descriptive activity names to name the activities in the data set
 addActivityNames <- function(pathDir, dFrame){
     # read activity names
@@ -54,9 +54,9 @@ addActivityNames <- function(pathDir, dFrame){
     dFrameWithActivity <- mutate(dFrame, activity = aNames[dFrame$activity_code,"V2"])
     # return the new frame
     dFrameWithActivity
-    
 }
 
+# replaceVarNames
 #  4- Appropriately labels the data set with descriptive variable names.
 replaceVarNames <- function(pathDir, dFrame){
     # read column names from features file
@@ -64,9 +64,10 @@ replaceVarNames <- function(pathDir, dFrame){
     cNames <- append(cNames[, 2], c("activity_code", "subject_code", "activity"))
     # replace variable (column) names with the ones in cNames frame (column 2) for the first 561 of them
     colnames(dFrame) <- cNames
+    # return updated data frame
     dFrame
 }
-
+# getAverageByActSubj
 #  5- From the data set in step 4, creates a second, independent tidy data set with the average of each variable for each activity and each subject
 getAverageByActSubj <- function(dFrame){
     meansFrame <- dFrame %>%
@@ -75,10 +76,10 @@ getAverageByActSubj <- function(dFrame){
     meansFrame
 }
 
-## writeToFile: writes contents of a dataframe to a file with the name run_analysis.txt
+# writeToFile: writes contents of a dataframe to a file with the name run_analysis.txt
 writeToFile <- function(df){
     fileName <-"run_analysis.txt"
-    write.table(df, file=fileName, quote=FALSE, row.names =FALSE, col.names=FALSE)
+    write.table(df, file=fileName, quote=FALSE, row.names =FALSE)
 }
 
 main <- function(){
@@ -86,14 +87,13 @@ main <- function(){
     # 1- Merge files
     trnTst <- mergeFiles(pathDir)
     # 3- Add a decriptive activity column
-    trnTstAct <- addActivityNames(pathDir, trnTst)
+    trnTst <- addActivityNames(pathDir, trnTst)
     # 4- Replace variable (column) names with appropriate ones
-    trnTstAct <- replaceVarNames(pathDir, trnTstAct)
+    trnTst <- replaceVarNames(pathDir, trnTst)
     # 2- Extract only the mean and standard deviation measurements (plus activity)
-    trnTstActMeanStd <- extractMnStdColumns(trnTstAct)
+    trnTst <- extractMnStdColumns(trnTst)
     # 5- Average of all measurements by subject and activity
-    meansFrame <- getAverageByActSubj(trnTstActMeanStd)
+    meansFrame <- getAverageByActSubj(trnTst)
     # write to file
     writeToFile(meansFrame)
-    
 }
